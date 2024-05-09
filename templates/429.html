@@ -1,0 +1,21 @@
+{% extends "layout/base.html" %}
+
+{% block content %}
+<style>
+    .container {
+        text-align: center;
+    }
+    h1 {
+        font-size: 3em;
+        margin-bottom: 0.5em;
+    }
+    p {
+        font-size: 1.2em;
+        margin-top: 0;
+    }
+</style>
+<div class="container my-5 py-5">
+    <h1>429 - Too Many Requests</h1>
+    <p>We're sorry, but you have exceeded the rate limit for this resource. Please try again later.</p>
+</div>
+{% endblock content %}

@@ -1,0 +1,12 @@
+.eyes-open{
+    position: absolute;
+    top: 38px;
+    right: 10px;
+}
+
+.eyes-open-con{
+    position: relative;
+}
+.password-padding{
+    padding-right: 30px !important;
+}

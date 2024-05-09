@@ -1,0 +1,121 @@
+{% extends "layout/base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block style %}
+  <link rel="stylesheet" href="{% static 'css/login.css' %}">
+{% endblock style %}
+
+{% block title %}
+  Sign up 
+{% endblock title %}
+
+{% block content %}
+<div class="mt-5 mb-5 pt-5" style="position:relative">
+    <div class="mt-5  d-flex justify-content-center align-items-center">
+        <div class=" col-lg-6  col-md-8 col-11 p-5 rounded" style="box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;">
+            <h1 class=" text-center mb-3 text-dark ">Create An Account</h1>
+            <form method="POST" >
+                {% csrf_token %}
+                {% if form.non_field_errors %}
+                <div id="alert-container" class="alert alert-danger alert-dismissible fade show w-100 d-flex justify-content-between align-content-center " role="alert">
+                    <ul class="messages">
+                        {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    <button id="dismiss-alert" type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"><i class="fa-regular fa-circle-xmark fa-xl"></i></button>
+                </div>
+                {% endif %}
+
+                <div class="mt-3">
+                    {{ form.username.errors | safe }}
+                    <label for="username">Username:</label>
+                    {% render_field form.username placeholder="Username" id="username" name="username" type="text" autocomplete="username" required=True class="relative block w-full px-3 py-2 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-none appearance-none rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" %}
+                  </div>
+
+                  <div class="mt-3">
+                    {{ form.email.errors | safe }}
+                    <label for="email">Email</label>
+                    {% render_field form.email id="email" name="email" placeholder="Email" type="email" autocomplete="email" required="True" class="relative block w-full px-3 py-2 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-none appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" %}
+                  </div>
+                  <div class="mt-3">
+                    {{ form.first_name.errors | safe }}
+                    <label for="first_name">First Name</label>
+                    {% render_field form.first_name id="first_name" name="first_name" placeholder="first name" type="text" autocomplete="first name" required="True" class="relative block w-full px-3 py-2 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-none appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" %}
+                  </div>
+                  <div class="mt-3">
+                    {{ form.last_name.errors | safe }}
+                    <label for="last_name">Last Name</label>
+                    {% render_field form.last_name id="last_name" name="last_name" placeholder="last name" type="text" autocomplete="last name" required="True" class="relative block w-full px-3 py-2 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-none appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" %}
+                  </div>
+
+                  <div class="mt-3">
+                    {{ form.password1.errors | safe }}
+                  <div class="eyes-open-con">
+                    <label for="password1">Password</label>
+                    {% render_field form.password1 id="password1" name="password1" placeholder="Password" type="password" autocomplete="current-password" required="True" class="relative block w-full px-3 py-2 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-none appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm password-padding" %}
+                    <div class="eyes-open"><i class="fa-solid fa-eye" id="password-look"></i></div>
+                  </div>
+                </div>
+                  <div class="mt-3">
+                    {{ form.password2.errors | safe }}
+                  <div class="eyes-open-con">
+                    <label for="password2">Password (repeat)</label>
+                    {% render_field form.password2 id="password2" name="password2" type="password" autocomplete="current-password" required="True" class="relative block w-full px-3 py-2 text-gray-900 placeholder-gray-500 border border-gray-300 rounded-none appearance-none rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm password-padding" placeholder="Confirm Password" %}
+                    <div class="eyes-open"><i class="fa-solid fa-eye" id="password-look2"></i></div>
+                  </div>
+                </div>
+
+                <button class="btn btn-primary w-100 mt-4 fw-bold py-2" type="submit">Register</button>
+            </form>
+            <a href="{% url 'google_login' %}" class="text-white"><button class="btn btn-success w-100 mt-2 fw-bold ">Signup with google</button></a>
+    
+            <script src="https://accounts.google.com/gsi/client" async defer></script>
+            <div id="g_id_onload"
+     data-client_id="1070158787657-4ut3rv3ir6p1qvgfi24v6j892kkmvvab.apps.googleusercontent.com"
+     data-login_uri="{% url 'google_login_by_token' %}"
+     data-your_own_param_1_to_login="any_value"
+     data-your_own_param_2_to_login="any_value">
+    </div>
+                <p class="mt-3 text-center  ">Already have an account? <a href="{% url 'account_login' %}">Login here</a></p>
+    
+                <script src="https://accounts.google.com/gsi/client" async></script> 
+            </div>
+        </div>
+      </div>
+</div>
+{% endblock content %}
+
+{% block srcipt %}
+<script>
+    const passwordChanger = document.getElementById("password-look");
+    let passwordState = 'closed';
+
+    passwordChanger.addEventListener('click', (e) => {
+    passwordState = passwordState === 'closed' ? 'open' : 'closed';
+        if (passwordState === 'open') {
+            passwordChanger.setAttribute('class', 'fa-solid fa-eye-slash');
+            document.getElementById("password1").setAttribute('type', 'text');
+        } else {
+            passwordChanger.setAttribute('class', 'fa-solid fa-eye');
+            document.getElementById("password1").setAttribute('type', 'password');
+        }
+});
+    const passwordChanger2 = document.getElementById("password-look2");
+    let passwordState2 = 'closed';
+
+    passwordChanger2.addEventListener('click', (e) => {
+    passwordState2 = passwordState2 === 'closed' ? 'open' : 'closed';
+        if (passwordState2 === 'open') {
+            passwordChanger2.setAttribute('class', 'fa-solid fa-eye-slash');
+            document.getElementById("password2").setAttribute('type', 'text');
+        } else {
+            passwordChanger2.setAttribute('class', 'fa-solid fa-eye');
+            document.getElementById("password2").setAttribute('type', 'password');
+        }
+});
+
+</script>
+
+{% endblock srcipt %}

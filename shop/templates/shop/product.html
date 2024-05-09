@@ -1,0 +1,867 @@
+{% extends "layout/base.html" %}
+{% load static %}
+
+{% block style %}
+    <style>
+        .selected {
+            color: #717fe0 !important;
+            border: 1px solid #717fe0;
+        }
+
+        .no-product {
+            text-align: center;
+            font-size: 3rem;
+
+        }
+
+        .filter-btn-con {
+            display: flex;
+            justify-content: center;
+        }
+
+        .filter-btn {
+            background-color: #000000;
+            font-weight: bold;
+            transition: all 0.5s;
+            color: #fff;
+            padding: 5px 15px;
+            border-radius: 10px;
+        }
+
+        .filter-btn:hover {
+            background-color: #717fe0;
+        }
+    </style>
+{% endblock style %}
+
+{% block content %}
+    <!-- Slider -->
+
+    <section class="section-slide">
+        <div class="wrap-slick1">
+            <div class="slick1">
+                <div class="item-slick1" style="background-image: url('{% static 'images/slide-01.jpg' %}');">
+                    <div class="container h-full">
+                        <div class="flex-col-l-m h-full p-t-100 p-b-30 respon5">
+                            <div class="layer-slick1 animated visible-false" data-appear="fadeInDown" data-delay="0">
+								<span class="ltext-101 cl2 respon2">
+									Women Collection 2018
+								</span>
+                            </div>
+
+                            <div class="layer-slick1 animated visible-false" data-appear="fadeInUp" data-delay="800">
+                                <h2 class="ltext-201 cl2 p-t-19 p-b-43 respon1">
+                                    NEW SEASON
+                                </h2>
+                            </div>
+
+                            <div class="layer-slick1 animated visible-false" data-appear="zoomIn" data-delay="1600">
+                                <a href="product.html"
+                                   class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
+                                    Shop Now
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="item-slick1" style="background-image: url('{% static 'images/slide-02.jpg' %}');">
+                    <div class="container h-full">
+                        <div class="flex-col-l-m h-full p-t-100 p-b-30 respon5">
+                            <div class="layer-slick1 animated visible-false" data-appear="rollIn" data-delay="0">
+								<span class="ltext-101 cl2 respon2">
+									Men New-Season
+								</span>
+                            </div>
+
+                            <div class="layer-slick1 animated visible-false" data-appear="lightSpeedIn"
+                                 data-delay="800">
+                                <h2 class="ltext-201 cl2 p-t-19 p-b-43 respon1">
+                                    Jackets & Coats
+                                </h2>
+                            </div>
+
+                            <div class="layer-slick1 animated visible-false" data-appear="slideInUp" data-delay="1600">
+                                <a href="product.html"
+                                   class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
+                                    Shop Now
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="item-slick1" style="background-image: url('{% static 'images/slide-03.jpg' %}');">
+
+                    <div class="container h-full">
+                        <div class="flex-col-l-m h-full p-t-100 p-b-30 respon5">
+                            <div class="layer-slick1 animated visible-false" data-appear="rotateInDownLeft"
+                                 data-delay="0">
+								<span class="ltext-101 cl2 respon2">
+									Men Collection 2018
+								</span>
+                            </div>
+
+                            <div class="layer-slick1 animated visible-false" data-appear="rotateInUpRight"
+                                 data-delay="800">
+                                <h2 class="ltext-201 cl2 p-t-19 p-b-43 respon1">
+                                    New arrivals
+                                </h2>
+                            </div>
+
+                            <div class="layer-slick1 animated visible-false" data-appear="rotateIn" data-delay="1600">
+                                <a href="product.html"
+                                   class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
+                                    Shop Now
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Banner -->
+    <div class="sec-banner bg0 p-t-80 p-b-50">
+        <div class="container">
+            <div class="row">
+                {% for category in random_categories %}
+                    {% if category.image %}
+                        <div class="col-md-6 col-xl-4 p-b-30 m-lr-auto ">
+                            <!-- Block1 -->
+                            <div class="block1 wrap-pic-w">
+                                <img src="{{ category.image.url }}" alt="{{ category.name }}" class="object-fit-cover">
+
+                                <a href="product.html"
+                                   class="block1-txt ab-t-l s-full flex-col-l-sb p-lr-38 p-tb-34 trans-03 respon3">
+                                    <div class="block1-txt-child1 flex-col-l">
+								<span class="block1-name ltext-102 trans-04 p-b-8">
+									{{ category.name }}
+								</span>
+                                    </div>
+
+                                    <div class="block1-txt-child2 p-b-4 trans-05">
+                                        <div class="block1-link stext-101 cl0 trans-09">
+                                            Shop Now
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Product -->
+    <section class="bg0 p-t-23 p-b-140">
+        <div class="container">
+            <div class="p-b-10">
+                <h3 class="ltext-103 cl5">
+                    Product Overview
+                </h3>
+
+            </div>
+
+            <div class="flex-w flex-sb-m p-b-52">
+                {#     Category filter section      #}
+                <div class="flex-w flex-l-m filter-tope-group m-tb-10">
+                    <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 how-active1" data-filter="*">
+                        All Products
+                    </button>
+
+                    {% for category in categories %}
+                        <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5"
+                                data-filter=".{{ category.name| lower }}">
+                            {{ category.name }}
+                        </button>
+                    {% endfor %}
+                </div>
+                {#---------------------------------------------------------------#}
+                <div class="flex-w flex-c-m m-tb-10">
+                    <div class="flex-c-m stext-106 cl6 size-104 bor4 pointer hov-btn3 trans-04 m-r-8 m-tb-4 js-show-filter">
+                        <i class="icon-filter cl2 m-r-6 fs-15 trans-04 zmdi zmdi-filter-list"></i>
+                        <i class="icon-close-filter cl2 m-r-6 fs-15 trans-04 zmdi zmdi-close dis-none"></i>
+                        Filter
+                    </div>
+
+                    <div class="flex-c-m stext-106 cl6 size-105 bor4 pointer hov-btn3 trans-04 m-tb-4 js-show-search">
+                        <i class="icon-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-search"></i>
+                        <i class="icon-close-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-close dis-none"></i>
+                        <span id="q-search-text">Search</span>
+                    </div>
+                </div>
+
+                <!-- Search product -->
+                <div class="dis-none panel-search w-full p-t-10 p-b-15">
+                    <div class="bor8 dis-flex p-l-15">
+                        <button class="size-113 flex-c-m fs-16 cl2 hov-cl1 trans-04">
+                            <i class="zmdi zmdi-search"></i>
+                        </button>
+
+                        <input class="mtext-107 cl2 size-114 plh2 p-r-15" type="text" name="search-product"
+                               placeholder="Search">
+                    </div>
+                </div>
+
+                <!-- Filter -->
+                <div class="dis-none panel-filter w-full p-t-10">
+                    <form class="wrap-filter flex-w bg6 w-full p-lr-40 p-t-27 p-lr-15-sm" id="form-filter-product">
+                        <div class="filter-col1 p-r-15 p-b-27">
+                            <div class="mtext-102 cl2 p-b-15">
+                                Sort By
+                            </div>
+
+                            <ul>
+                                <li class="p-b-6">
+                                    <a href="#" class="filter-link stext-106 trans-04">
+                                        Default
+                                    </a>
+                                </li>
+
+                                <li class="p-b-6">
+                                    <a href="#" class="filter-link stext-106 trans-04">
+                                        Popularity
+                                    </a>
+                                </li>
+
+                                <li class="p-b-6">
+                                    <a href="#" class="filter-link stext-106 trans-04">
+                                        Average rating
+                                    </a>
+                                </li>
+
+                                <li class="p-b-6">
+                                    <a href="#" class="filter-link stext-106 trans-04 filter-link-active">
+                                        Newness
+                                    </a>
+                                </li>
+
+                                <li class="p-b-6">
+                                    <a href="#" class="filter-link stext-106 trans-04">
+                                        Price: Low to High
+                                    </a>
+                                </li>
+
+                                <li class="p-b-6">
+                                    <a href="#" class="filter-link stext-106 trans-04">
+                                        Price: High to Low
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="filter-col2 p-r-15 p-b-27">
+                            <div class="mtext-102 cl2 p-b-15">
+                                Price
+                            </div>
+
+                            <ul>
+                                <li class="p-b-6">
+                                    <a href="#" class="filter-link stext-106 trans-04 filter-link-active product-price"
+                                       id="all-price-link" data-price-name="all" onclick="togglePrice(event)"
+                                       data-price-min="0" data-price-max="{{ max_price }}">
+                                        All
+                                    </a>
+                                </li>
+                                {% for min, max in prices %}
+                                    <li class="p-b-6">
+                                        <a href="#" class="filter-link stext-106 trans-04 product-price"
+                                           onclick="togglePrice(event)"
+                                           data-price-min="0" data-price-max="{{ max }}">
+                                            $0 - ${{ max }}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                                <input type="hidden" id="selectedPriceMaxInput" name="max" value="{{ max_price }}">
+                                <input type="hidden" id="selectedPriceMinInput" name="min" value="0">
+                            </ul>
+                        </div>
+
+                        <div class="filter-col3 p-r-15 p-b-27">
+                            <div class="mtext-102 cl2 p-b-15">
+                                Color
+                            </div>
+
+                            <ul>
+                                <li class="p-b-6">
+									<span class="fs-15 lh-12 m-r-6" style="color: #222;">
+										<i class="zmdi zmdi-circle"></i>
+									</span>
+
+                                    <a href="#" class="filter-link stext-106 trans-04 " id="all-color-link"
+                                       data-color-name="all" onclick="selectAllColors(event)">
+                                        All
+                                    </a>
+                                </li>
+
+                                {% for color in colors %}
+                                    <li class="p-b-6">
+									<span class="fs-15 lh-12 m-r-6" style="color: {{ color }};">
+										<i class="zmdi zmdi-circle"></i>
+									</span>
+
+                                        <a href="#" class="filter-link stext-106 trans-04 product-color"
+                                           onclick="toggleColor(event)" data-color-name="{{ color }}">
+                                            {{ color }}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                                <input type="hidden" id="selectedColorInput" name="colors">
+                            </ul>
+                        </div>
+                        <div class="filter-col4 p-b-27">
+                            <div class="mtext-102 cl2 p-b-15">
+                                Tags
+                            </div>
+
+                            <div class="flex-w p-t-4 m-r--5">
+                                <a class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15  trans-04 m-r-5 m-b-5"
+                                   id="all-tag-link"
+                                   data-tag-name="all" style="cursor: pointer"
+                                   onclick="selectAllTag(event)">
+                                    All
+                                </a>
+                                {% for tag in tags %}
+                                    <a onclick="toggleTag(event)"
+                                       class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15  trans-04 m-r-5 m-b-5 product-tags"
+                                       data-tag-name="{{ tag.name }}" style="cursor: pointer">
+                                        {{ tag.name }}
+                                    </a>
+                                {% endfor %}
+                                <input type="hidden" id="selectedTagInput" name="tags">
+                            </div>
+                        </div>
+                        <div class="col-12 filter-btn-con">
+                            <button type="submit" class="filter-btn mb-3 col-1" id="filter-button-submit">filter
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <h6 class=" cl1 fs-20 mb-5" id="product-search-overview" style="display: none">
+                Product search for
+            </h6>
+            <div class="row isotope-grid">
+            </div>
+            <!-- Load more -->
+
+            <div class="flex-c-m flex-w w-full p-t-45">
+                <a href="#" class="flex-c-m stext-101 cl5 size-103 bg2 bor1 hov-btn1 p-lr-15 trans-04"
+                   id="load-more-btn">
+                    Load More
+                </a>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Modal1 -->
+    <div class="wrap-modal1 js-modal1 p-t-60 p-b-20">
+        <div class="overlay-modal1 js-hide-modal1"></div>
+
+        <div class="container">
+            <div class="bg0 p-t-60 p-b-30 p-lr-15-lg how-pos3-parent">
+                <button class="how-pos3 hov3 trans-04 js-hide-modal1">
+                    <img src="{% static 'images/icons/icon-close.png' %}" alt="CLOSE">
+                </button>
+
+                <div class="row">
+                    <div class="col-md-6 col-lg-7 p-b-30">
+                        <div class="p-l-25 p-r-30 p-lr-0-lg">
+                            <div class="wrap-slick3 flex-sb flex-w">
+                                <div class="wrap-slick3-dots"></div>
+                                <div class="wrap-slick3-arrows flex-sb-m flex-w"></div>
+
+                                <div class="slick3 gallery-lb" id="modal-card-image-con"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-5 p-b-30">
+                        <div class="p-r-50 p-t-5 p-lr-0-lg">
+                            <h4 class="mtext-105 cl2 js-name-detail p-b-14" id="modal-product-name"></h4>
+
+                            <span class="mtext-106 cl2" id="modal-product-price"></span>
+
+                            <p class="stext-102 cl3 p-t-23" id="modal-product-desc"></p>
+
+                            <!--  -->
+                            <form class="p-t-33" id="product-order-form">
+                                <div class="flex-w flex-r-m p-b-10" id="modal-size-con">
+                                    <div class="size-203 flex-c-m respon6">
+                                        Size
+                                    </div>
+
+                                    <div class="size-204 respon6-next">
+                                        <div class="rs1-select2 bor8 bg0">
+                                            <select class="js-select2" name="size" id="size-select-con">
+                                                <option>Choose an option</option>
+                                                <option>Size S</option>
+                                                <option>Size M</option>
+                                                <option>Size L</option>
+                                                <option>Size XL</option>
+                                            </select>
+                                            <div class="dropDownSelect2"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="flex-w flex-r-m p-b-10" id="modal-color-con">
+                                    <div class="size-203 flex-c-m respon6">
+                                        Color
+                                    </div>
+
+                                    <div class="size-204 respon6-next">
+                                        <div class="rs1-select2 bor8 bg0">
+                                            <select class="js-select2" name="color" id="color-select-con">
+                                                <option>Choose an option</option>
+                                                <option>Red</option>
+                                                <option>Blue</option>
+                                                <option>White</option>
+                                                <option>Grey</option>
+                                            </select>
+                                            <div class="dropDownSelect2"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="hidden" name="product-id" value="" id="product-id-modal">
+
+                                <div class="flex-w flex-r-m p-b-10">
+                                    <div class="size-204 flex-w flex-m respon6-next">
+                                        <div class="wrap-num-product flex-w m-r-20 m-tb-10">
+                                            <div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
+                                                <i class="fs-16 zmdi zmdi-minus"></i>
+                                            </div>
+
+                                            <input class="mtext-104 cl3 txt-center num-product" type="number"
+                                                   name="num-product" value="1">
+
+                                            <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
+                                                <i class="fs-16 zmdi zmdi-plus"></i>
+                                            </div>
+                                        </div>
+
+                                        <button class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail"
+                                                type="submit">
+                                            Add to cart
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <!--  -->
+                            <div class="flex-w flex-m p-l-100 p-t-40 respon7">
+                                <div class="flex-m bor9 p-r-10 m-r-11">
+                                    <a href="#"
+                                       class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 js-addwish-detail tooltip100"
+                                       data-tooltip="Add to Wishlist">
+                                        <i class="zmdi zmdi-favorite"></i>
+                                    </a>
+                                </div>
+
+                                <a href="#" class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100"
+                                   data-tooltip="Facebook">
+                                    <i class="fa fa-facebook"></i>
+                                </a>
+
+                                <a href="#" class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100"
+                                   data-tooltip="Twitter">
+                                    <i class="fa fa-twitter"></i>
+                                </a>
+
+                                <a href="#" class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100"
+                                   data-tooltip="Google Plus">
+                                    <i class="fa fa-google-plus"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block script %}
+    {#    <script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js"></script>#}
+    <script>
+
+        function selectAllTag(event) {
+            event.preventDefault();
+            let allTagLink = document.getElementById("all-tag-link");
+            const otherTags = document.querySelectorAll(".product-tags")
+            otherTags.forEach((tag) => {
+                tag.classList.remove('selected');
+            });
+            let selectedTagInput = document.getElementById('selectedTagInput');
+            selectedTagInput.value = ""
+            updateAllTagSelection()
+        }
+
+        function updateAllTagSelection() {
+            let selectedTagInput = document.getElementById('selectedTagInput');
+            let allTagLink = document.getElementById("all-tag-link");
+
+            if (!selectedTagInput.value.trim()) {
+                allTagLink.classList.add('selected');
+            } else {
+                allTagLink.classList.remove('selected');
+            }
+        }
+
+        function toggleTag(event) {
+            event.preventDefault(); // Prevent default link behavior
+            let selectedTag = event.target;
+            let tagName = selectedTag.getAttribute('data-tag-name');
+            let hiddenInput = document.getElementById('selectedTagInput');
+            let selectedTags = hiddenInput.value ? hiddenInput.value.split(',') : [];
+            // Toggle the selection state of the clicked tag
+            if (selectedTags.includes(tagName)) {
+                // Tag is already selected, remove it
+                selectedTags = selectedTags.filter(tag => tag !== tagName);
+                selectedTag.classList.remove('selected');
+            } else {
+                // Tag is not selected, add it
+                selectedTags.push(tagName);
+                selectedTag.classList.add('selected');
+            }
+            // Update the value of the hidden input field with the selected tag names
+            hiddenInput.value = selectedTags.join(',');
+            updateAllTagSelection()
+        }
+
+        {#-----------------------------------------------------------------------------------------------------------#}
+
+        function toggleColor(event) {
+            event.preventDefault();
+            let selectedColor = event.target;
+            let colorName = selectedColor.getAttribute('data-color-name');
+            let hiddenInput = document.getElementById('selectedColorInput');
+            let selectedColors = hiddenInput.value ? hiddenInput.value.split(',') : [];
+            // Toggle the selection state of the clicked tag
+            if (selectedColors.includes(colorName)) {
+                // Tag is already selected, remove it
+                selectedColors = selectedColors.filter(color => color !== colorName);
+                selectedColor.classList.remove('filter-link-active');
+            } else {
+                // Tag is not selected, add it
+                selectedColors.push(colorName);
+                selectedColor.classList.add('filter-link-active');
+            }
+            // Update the value of the hidden input field with the selected tag names
+            hiddenInput.value = selectedColors.join(',');
+            updateAllColorSelection()
+        }
+
+        function updateAllColorSelection() {
+            let selectedColorInput = document.getElementById('selectedColorInput');
+            let allColorLink = document.getElementById("all-color-link");
+
+            if (!selectedColorInput.value.trim()) {
+                allColorLink.classList.add('filter-link-active');
+            } else {
+                allColorLink.classList.remove('filter-link-active');
+            }
+        }
+
+        function selectAllColors(event) {
+            event.preventDefault();
+            const otherColors = document.querySelectorAll(".product-color")
+            otherColors.forEach((color) => {
+                color.classList.remove('filter-link-active');
+            });
+            let selectedTagInput = document.getElementById('selectedColorInput');
+            selectedTagInput.value = ""
+            updateAllColorSelection()
+        }
+
+        {# -----------------------------------------------------------------------------------------#}
+
+        function togglePrice(event) {
+            event.preventDefault();
+            let selectedPrice = event.target;
+            let priceMax = selectedPrice.getAttribute('data-price-max');
+            let priceMin = selectedPrice.getAttribute('data-price-min');
+            let hiddenInputMax = document.getElementById('selectedPriceMaxInput');
+            let hiddenInputMin = document.getElementById('selectedPriceMinInput');
+            hiddenInputMax.value = priceMax
+            hiddenInputMin.value = priceMin
+            const allProductPrices = document.querySelectorAll(".product-price")
+            allProductPrices.forEach((price) => {
+                price.classList.remove("filter-link-active")
+            })
+            selectedPrice.classList.add("filter-link-active")
+        }
+
+
+        {#-----------------------------------------------------------------------------------------------#}
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize Isotope layout
+            let $topeContainer = $('.isotope-grid');
+            // Wait for all images and other resources to be loaded
+            $(window).on('load', function () {
+                var $grid = $topeContainer.each(function () {
+                    $(this).isotope({
+                        itemSelector: '.isotope-item',
+                        layoutMode: 'fitRows',
+                        percentPosition: true,
+                        animationEngine: 'best-available',
+                        masonry: {
+                            columnWidth: '.isotope-item'
+                        }
+                    });
+                });
+            });
+
+            // filter items on button click
+            let $filter = $('.filter-tope-group');
+            $filter.each(function () {
+                $filter.on('click', 'button', function () {
+                    var filterValue = $(this).attr('data-filter');
+                    $topeContainer.isotope({filter: filterValue});
+                });
+            });
+
+            // Add event listener to form submission
+            const form = document.getElementById('form-filter-product')
+            form.addEventListener('submit', fetchProducts);
+
+            $('input[name="search-product"]').on('input', async event => {
+                $('#q-search-text').html('<i class="fa-solid fa-spinner fa-spin fa-lg" style="color: #000000;"></i>');
+                const searchDone = await fetchProducts(event);
+                if (searchDone) {
+                    $('#q-search-text').text("search");
+                    if ($('input[name="search-product"]').val()) {
+                        $("#product-search-overview").text(`Product search for ${$('input[name="search-product"]').val()}.`).css('display', 'block')
+                    } else {
+                        $('#product-search-overview').css('display', 'none')
+                    }
+                }
+            });
+
+            // Function to fetch products
+            async function fetchProducts(event) {
+                event.preventDefault();
+                const $formBtnSubmit = $("#filter-button-submit")
+
+                $formBtnSubmit.html('<i class="fa-solid fa-spinner fa-spin fa-lg" style="color: #ffffff;"></i>')
+                // Get values from the DOM
+                const query = $('input[name="search-product"]').val()
+                const minPrice = document.getElementById('selectedPriceMinInput').value;
+                const maxPrice = document.getElementById('selectedPriceMaxInput').value;
+                const tags = document.getElementById("selectedTagInput").value
+                const colors = document.getElementById("selectedColorInput").value
+
+                // Construct the URL with query parameters
+                let url = '/api/products/';
+                if (query || minPrice || maxPrice || tags.length > 0 || colors.length > 0) {
+                    url += '?';
+                    if (query) url += `q=${encodeURIComponent(query)}&`;
+                    if (minPrice) url += `min=${minPrice}&`;
+                    if (maxPrice) url += `max=${maxPrice}&`;
+                    if (tags.length > 0) url += `tags=${encodeURIComponent(tags)}&`;
+                    if (colors.length > 0) url += `colors=${encodeURIComponent(colors)}&`;
+                    // Remove trailing '&' if present
+                    url = url.replace(/&$/, '');
+                }
+                // Fetch data
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // Append products to DOM
+                        productIntoDom(data);
+                        // Update Isotope layout
+                        $topeContainer.isotope('layout');
+                        $formBtnSubmit.html("filter");
+                        if ($('.js-show-filter').hasClass('show-filter')) {
+                            $('.js-show-filter').removeClass('show-filter');
+                            $('.panel-filter').slideUp(1000);
+                        }
+
+                    })
+                    .catch(error => {
+                        console.error('There was a problem with the fetch operation:', error);
+                    });
+
+                return "done";
+            }
+
+            function showModalAndFilter(data) {
+                $('.js-show-modal1').each(function () {
+                    $(this).on('click', function (e) {
+                        e.preventDefault();
+                        $('.js-modal1').addClass('show-modal1');
+                        // Your logic here
+                        const slug = this.getAttribute('data-product-slug');
+                        const filterData = data.find(product => product.slug === slug)
+                        console.log(filterData.images)
+                        const $modalCardCon = $('#modal-card-image-con')
+
+                        $modalCardCon.empty()
+                        {#$(".wrap-slick3-dots").empty()#}
+                        $modalCardCon.append(imageCard(filterData.image))
+                        filterData.images.forEach(({image}) => $modalCardCon.append(imageCard(image)))
+                        $("#modal-product-name").text(filterData.name)
+                        $("#modal-product-price").text(`$${filterData.price}`)
+                        $("#product-id-modal").val(`${filterData.id}`)
+                        const description = filterData.description;
+                        const capitalizedDescription = description.charAt(0).toUpperCase() + description.slice(1);
+                        $("#modal-product-desc").text(`${capitalizedDescription}`)
+                        populateElement(filterData.sizes, "#modal-size-con", "#size-select-con", 'size', "SIZE")
+                        populateElement(filterData.colors, "#modal-color-con", "#color-select-con", 'color')
+
+                        $('.wrap-slick3').each(function () {
+                            $(this).find('.slick3').slick({
+                                slidesToShow: 1,
+                                slidesToScroll: 1,
+                                fade: true,
+                                infinite: true,
+                                autoplay: false,
+                                autoplaySpeed: 6000,
+
+                                arrows: true,
+                                appendArrows: $(this).find('.wrap-slick3-arrows'),
+                                prevArrow: '<button class="arrow-slick3 prev-slick3"><i class="fa fa-angle-left" aria-hidden="true"></i></button>',
+                                nextArrow: '<button class="arrow-slick3 next-slick3"><i class="fa fa-angle-right" aria-hidden="true"></i></button>',
+
+                                dots: true,
+                                appendDots: $(this).find('.wrap-slick3-dots'),
+                                dotsClass: 'slick3-dots',
+                                customPaging: function (slick, index) {
+                                    var portrait = $(slick.$slides[index]).data('thumb');
+                                    return '<img src=" ' + portrait + ' "/><div class="slick3-dot-overlay"></div>';
+                                },
+                            });
+                        });
+
+
+                    });
+                });
+
+                function populateElement(data, elementId, elementConId, field, conName = null) {
+                    $(elementId).css('display', 'flex');
+                    if (data.length === 0) {
+                        $(elementId).css('display', 'none');
+                        return
+                    }
+                    $(elementId).each(() => {
+
+                        const $selectElement = $(elementConId)
+                        $selectElement.empty();
+
+                        data.forEach(function (optionText) {
+                            $selectElement.append($('<option>', {
+                                value: optionText.id,
+                                text: `${conName ? conName : ""} ${optionText[field].toUpperCase()}`
+                            }));
+                        });
+                    })
+                }
+
+                function imageCard(image) {
+                    return (image && `
+                                <div class="item-slick3" data-thumb="${image}">
+                                            <div class="wrap-pic-w pos-relative">
+                                                <img src="${image}" alt="image.id">
+
+                                                <a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04"
+                                                   href="${image}">
+                                                    <i class="fa fa-expand"></i>
+                                                </a>
+                                            </div>
+                                 </div>
+                `)
+                }
+
+
+                $('.js-hide-modal1').on('click', function () {
+                    $('.js-modal1').removeClass('show-modal1');
+                    $('.wrap-slick3').each(function () {
+                        $(this).find('.slick3').slick('unslick');
+                    });
+
+                });
+            }
+
+            // Function to append products to DOM
+            function productIntoDom(data) {
+                const $loadMoreBtn = $("#load-more-btn")
+                $topeContainer.empty()
+                if (data.length === 0) {
+                    $loadMoreBtn.html('<span class="text-black">no product available</span>')
+                    return
+                }
+                data.forEach(product => {
+                    $topeContainer.append(card(product));
+                    $topeContainer.isotope('appended', $topeContainer.find('.isotope-item').last());
+                    $topeContainer.isotope('layout');
+                    $loadMoreBtn.html('LOAD MORE')
+                });
+                {#show the quick view modal and the products#}
+                showModalAndFilter(data);
+
+                // Update Isotope layout after appending new items
+            }
+
+            // Function to generate HTML for product card
+            function card(product) {
+                return (`
+            <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item ${product.category.name.toLowerCase()}" >
+                <!-- Block2 -->
+                <div class="block2">
+                    <div class="block2-pic hov-img0">
+                        <img src="${product.image}" alt="${product.name}">
+                        <a href='#'  class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1" data-product-slug="${product.slug}">
+                            Quick View
+                        </a>
+                    </div>
+                    <div class="block2-txt flex-w flex-t p-t-14">
+                        <div class="block2-txt-child1 flex-col-l ">
+                            <a href="product-detail.html" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+                                ${product.name}
+                            </a>
+                            <span class="stext-105 cl3">$${product.price}</span>
+                        </div>
+                        <div class="block2-txt-child2 flex-r p-t-3">
+                            <a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
+                                <img class="icon-heart1 dis-block trans-04" src="{% static 'images/icons/icon-heart-01.png' %}" alt="ICON">
+                                <img class="icon-heart2 dis-block trans-04 ab-t-l" src="{% static 'images/icons/icon-heart-02.png' %}" alt="ICON">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `);
+            }
+
+            fetchProducts(new Event("submit"));
+
+            $("#product-order-form").submit(function (event) {
+                const jsonData = {};
+                event.preventDefault();
+                const formData = new FormData(this);
+
+                formData.forEach(function (value, key) {
+                    jsonData[key] = value;
+                });
+
+                console.log(jsonData);
+            });
+
+        });
+
+    </script>
+{% endblock script %}
