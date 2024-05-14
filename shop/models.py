@@ -43,7 +43,8 @@ class ProductQuerySet(models.QuerySet):
 
         lookups = Q()
         if query:
-            lookups |= Q(name__icontains=query) | Q(description__icontains=query) | Q(tags__name__icontains=query) | Q(category__name__icontains=query)
+            lookups |= Q(name__icontains=query) | Q(description__icontains=query) | Q(tags__name__icontains=query) | Q(
+                category__name__icontains=query)
 
         if min_price is not None:
             lookups &= Q(price__gte=min_price)
@@ -86,7 +87,7 @@ class Product(models.Model):
     image = models.ImageField(upload_to=product_primary_image_upload_path, help_text="This the primary image for the "
                                                                                      "product")
     description = models.TextField(help_text="Description for the product")
-    short_description = models.CharField(help_text="Short description for the product",max_length=200)
+    short_description = models.CharField(help_text="Short description for the product", max_length=200)
     tags = TaggableManager()
 
     objects = ProductManager()
@@ -104,7 +105,6 @@ class Product(models.Model):
             models.Index(fields=["name", "slug"])
         ]
         ordering = ["-created", "-updated", "-id"]
-
 
     def __str__(self):
         return self.name

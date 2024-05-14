@@ -215,6 +215,7 @@ SOCIALACCOUNT_LOGIN_ON_GET = True
 
 # cart settings
 CART_SESSION_ID = 'cart'
+WISHLIST_SESSION_ID = 'wishlist'
 
 
 

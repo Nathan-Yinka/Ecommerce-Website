@@ -19,4 +19,4 @@ class CartAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         # Disable the ability to delete Cart instances
         return False
-    list_display = ["user"]
+    list_display = ["user",'data',"type"]

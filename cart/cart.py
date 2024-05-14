@@ -20,7 +20,7 @@ class Cart:
     def initialize_cart(self, request):
         cart_data = self.session.get(settings.CART_SESSION_ID, {})
         if request.user.is_authenticated:
-            user_cart, created = CartModel.objects.get_or_create(user=request.user)
+            user_cart, created = CartModel.objects.get_or_create(user=request.user,type="cart")
             if len(cart_data) != 0:
                 user_cart.data = cart_data.copy()
                 user_cart.save()
@@ -105,7 +105,7 @@ class Cart:
         marks the sessions as modified to ake sure it get saved
         """
         if self.request.user.is_authenticated:
-            cart = self.request.user.cart
+            cart = self.request.user.cart.get(type='cart')
             cart.data = self.cart.copy()
             cart.save()
         else:

@@ -10,6 +10,7 @@ from django.test import TestCase
 
 from shop.models import Product, ProductSize, ProductColor, Category
 from .cart import Cart
+from .wishlist import Wishlist
 
 User = get_user_model()
 
@@ -191,3 +192,90 @@ class CartTestCase(TestCase):
         self.assertEqual(product_id, expected_product_id)
         self.assertEqual(size_id, expected_size_id)
         self.assertEqual(color_id, expected_color_id)
+
+
+class WishlistTestCase(TestCase):
+    def setUp(self):
+        # Create a user for testing
+        self.factory = RequestFactory()
+        self.user = User.objects.create_user(username='testuser', password='12345')
+
+        # Create some products for testing
+        self.category = Category.objects.create(name="Test Category")
+        image_content = b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x01\x03\x00\x00\x00\x1f'
+        self.image = SimpleUploadedFile("test_image.png", image_content, content_type="image/png")
+        self.product1 = Product.objects.create(
+            name="Test Product1",
+            slug="test-product1",
+            category=self.category,
+            price=Decimal('10.00'),
+            available=True,
+            description="This is a test product description.",
+            image=self.image
+        )
+        self.product2 = Product.objects.create(
+            name="Test Product2",
+            slug="test-product2",
+            category=self.category,
+            price=Decimal('10.00'),
+            available=True,
+            description="This is a test product description.",
+            image=self.image
+        )
+
+    @property
+    def request(self):
+        request = self.factory.get('/')
+        request.user = AnonymousUser()  # swap request with self.user and AnonymousUser() to test for authenticated
+        # user and Anonymous user
+
+        middleware = SessionMiddleware(lambda req: None)
+        middleware.process_request(request)
+        request.session.save()
+
+        return request
+
+    def test_add_to_wishlist(self):
+        # Initialize wishlist for the user
+        request = self.request
+        wishlist = Wishlist(request)
+
+        # Add a product to the wishlist
+        wishlist.add(self.product1.id)
+        # adding the same product to the wishlist
+        wishlist.add(self.product1.id)
+        wishlist.add(self.product1.id)
+
+        # Check if the product is added to the wishlist
+        self.assertIn(str(self.product1.id), wishlist.wishlist)
+        self.assertEqual(len(wishlist),1)
+
+    def test_remove_from_wishlist(self):
+        # Initialize wishlist for the user
+        request = self.request
+        wishlist = Wishlist(request)
+
+        # Add a product to the wishlist
+        wishlist.add(self.product1.id)
+
+        # Remove the product from the wishlist
+        wishlist.remove(self.product1.id)
+
+        # Check if the product is removed from the wishlist
+        self.assertNotIn(str(self.product1.id), wishlist.wishlist)
+
+    def test_wishlist_iteration_and_length(self):
+        # Iterate over the wishlist
+        request = self.request
+        wishlist = Wishlist(request)
+
+        # Add a product to the wishlist
+        wishlist.add(self.product1.id)
+        wishlist.add(self.product2.id)
+
+        products_in_wishlist = list(wishlist)
+
+        # Check if the correct products are returned
+        self.assertEqual(len(products_in_wishlist), 2)
+        self.assertIn(self.product1, products_in_wishlist)
+        self.assertIn(self.product2, products_in_wishlist)
