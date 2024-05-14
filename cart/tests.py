@@ -1,16 +1,23 @@
 from decimal import Decimal
 
 from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AnonymousUser
+from django.contrib.sessions.middleware import SessionMiddleware
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import TestCase, Client
+from django.test import RequestFactory
+from django.test import TestCase
 
 from shop.models import Product, ProductSize, ProductColor, Category
 from .cart import Cart
 
+User = get_user_model()
+
 
 class CartTestCase(TestCase):
     def setUp(self):
-        self.client = Client()
+        self.user = User.objects.create_user(username='testuser', password='password123')
+        self.factory = RequestFactory()
 
         # Create a dummy image file for testing
         image_content = b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x01\x03\x00\x00\x00\x1f'
@@ -37,10 +44,22 @@ class CartTestCase(TestCase):
         self.color1 = ProductColor.objects.create(product=self.product, color="Red")
         self.color2 = ProductColor.objects.create(product=self.product, color="Blue")
 
+    @property
+    def request(self):
+        request = self.factory.get('/')
+        request.user = AnonymousUser()  # swap request with self.user and AnonymousUser() to test for authenticated
+                                        # user annd Anonymous user
+
+        middleware = SessionMiddleware(lambda req: None)
+        middleware.process_request(request)
+        request.session.save()
+
+        return request
+
     def test_add_product_to_cart(self):
         # Initialize a cart and add a product
-        cart = Cart(self.client)
-        cart.add(self.product, quantity=2, size=self.size1, color=self.color1)
+        cart = Cart(self.request)
+        cart.add(self.product.id, quantity=2, size_id=self.size1.id, color_id=self.color1.id)
 
         # Check if the product is added to the cart correctly
         self.assertEqual(len(cart), 2)
@@ -48,13 +67,13 @@ class CartTestCase(TestCase):
 
     def test_add_product_with_different_sizes_and_colors_to_cart(self):
         # Initialize a cart
-        cart = Cart(self.client)
+        cart = Cart(self.request)
 
         # Add products with different sizes and colors to the cart
-        cart.add(self.product, quantity=1, size=self.size1, color=self.color1)
-        cart.add(self.product, quantity=1, size=self.size1, color=self.color1)
-        cart.add(self.product, quantity=1, size=self.size1, color=self.color1)
-        cart.add(self.product, quantity=2, size=self.size2, color=self.color2)
+        cart.add(self.product.id, quantity=1, size_id=self.size1.id, color_id=self.color1.id)
+        cart.add(self.product.id, quantity=1, size_id=self.size1.id, color_id=self.color1.id)
+        cart.add(self.product.id, quantity=1, size_id=self.size1.id, color_id=self.color1.id)
+        cart.add(self.product.id, quantity=2, size_id=self.size2.id, color_id=self.color2.id)
 
         # Check if the products are added to the cart correctly
         self.assertEqual(len(cart), 5)  # Total quantity should be 3
@@ -63,33 +82,33 @@ class CartTestCase(TestCase):
 
     def test_remove_product_from_cart(self):
         # Initialize a cart and add a product
-        cart = Cart(self.client)
-        cart.add(self.product, quantity=3, size=self.size2, color=self.color2)
+        cart = Cart(self.request)
+        cart.add(self.product.id, quantity=3, size_id=self.size2.id, color_id=self.color2.id)
 
         # Remove one quantity of the product from the cart
-        cart.remove(self.product, size=self.size2, color=self.color2)
+        cart.remove(self.product.id, size_id=self.size2.id, color_id=self.color2.id)
 
         # Check if the quantity is updated correctly
         self.assertEqual(len(cart), 2)
 
     def test_remove_all_product_instances_from_cart(self):
         # Initialize a cart and add a product
-        cart = Cart(self.client)
-        cart.add(self.product, quantity=3, size=self.size2, color=self.color2)
+        cart = Cart(self.request)
+        cart.add(self.product.id, quantity=3, size_id=self.size2.id, color_id=self.color2.id)
 
         # Remove all instances of the product from the cart
-        cart.remove(self.product, size=self.size2, color=self.color2, remove_all=True)
+        cart.remove(self.product.id, size_id=self.size2.id, color_id=self.color2.id, remove_all=True)
 
         # Check if the product is completely removed from the cart
         self.assertEqual(len(cart), 0)
 
     def test_iterate_over_cart_items(self):
         # Initialize a cart
-        cart = Cart(self.client)
+        cart = Cart(self.request)
 
         # Add products to the cart
-        cart.add(self.product, quantity=2, size=self.size1, color=self.color1)
-        cart.add(self.product, quantity=1, size=self.size2, color=self.color2)
+        cart.add(self.product.id, quantity=2, size_id=self.size1.id, color_id=self.color1.id)
+        cart.add(self.product.id, quantity=1, size_id=self.size2.id, color_id=self.color2.id)
 
         # delete the size from the database
         self.size1.delete()
@@ -121,9 +140,9 @@ class CartTestCase(TestCase):
 
     def test_clear_cart(self):
         # Initialize a cart and add some products
-        cart = Cart(self.client)
-        cart.add(self.product, quantity=2, size=self.size1, color=self.color1)
-        cart.add(self.product, quantity=1, size=self.size2, color=self.color2)
+        cart = Cart(self.request)
+        cart.add(self.product.id, quantity=2, size_id=self.size1.id, color_id=self.color1.id)
+        cart.add(self.product.id, quantity=1, size_id=self.size2.id, color_id=self.color2.id)
 
         # Check if the cart is not empty before clearing
         self.assertGreater(len(cart), 0)
@@ -139,10 +158,10 @@ class CartTestCase(TestCase):
 
     def test_generate_variant_key(self):
         # Call the _generate_variant_key method with the product, size, and color
-        variant_key = Cart._generate_variant_key(self.product, size=self.size1, color=self.color1)
-        variant_key2 = Cart._generate_variant_key(self.product, size=None, color=self.color1)
-        variant_key3 = Cart._generate_variant_key(self.product, size=self.size1, color=None)
-        variant_key4 = Cart._generate_variant_key(self.product, size=None, color=None)
+        variant_key = Cart._generate_variant_key(self.product.id, size_id=self.size1.id, color_id=self.color1.id)
+        variant_key2 = Cart._generate_variant_key(self.product.id, size_id=None, color_id=self.color1.id)
+        variant_key3 = Cart._generate_variant_key(self.product.id, size_id=self.size1.id, color_id=None)
+        variant_key4 = Cart._generate_variant_key(self.product.id, size_id=None, color_id=None)
 
         # Expected variant key format: "<product_id>-<size_id>-<color_id>"
         expected_key = f"{self.product.id}-{self.size1.id}-{self.color1.id}"

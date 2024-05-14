@@ -2,12 +2,16 @@ from rest_framework import generics
 
 from shop.models import Product
 
+
 from .serializers import ProductSerializer
+
+from myshop.pagination import ProductPageNumberPagination
 
 
 class ProductListView(generics.ListAPIView):
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
+    pagination_class = ProductPageNumberPagination
 
     def get_queryset(self):
         query = self.request.GET.get('q', "")

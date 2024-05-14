@@ -2,6 +2,8 @@ from decimal import Decimal
 
 from django.conf import settings
 
+
+from .models import Cart as CartModel
 from shop.models import Product, ProductSize, ProductColor
 
 
@@ -12,17 +14,27 @@ class Cart:
         Initializes a new Cart
         """
         self.session = request.session
-        cart = self.session.get(settings.CART_SESSION_ID)
+        self.cart = self.initialize_cart(request)
+        self.request = request
 
-        if not cart:
-            cart = self.session[settings.CART_SESSION_ID] = {}
-            self.cart = cart
+    def initialize_cart(self, request):
+        cart_data = self.session.get(settings.CART_SESSION_ID, {})
+        if request.user.is_authenticated:
+            user_cart, created = CartModel.objects.get_or_create(user=request.user)
+            if len(cart_data) != 0:
+                user_cart.data = cart_data.copy()
+                user_cart.save()
+                self.session[settings.CART_SESSION_ID] = {}
+                self.session.save()
+            return user_cart.data.copy()
+        else:
+            return cart_data
 
-    def add(self, product, quantity, override_quantity=False, size=None, color=None):
+    def add(self, product_id, quantity, override_quantity=False, size_id=None, color_id=None):
         """
         Add a product to the cart or update it quantity
         """
-        variant_key = self._generate_variant_key(product, size, color)
+        variant_key = self._generate_variant_key(product_id, size_id, color_id)
 
         if variant_key not in self.cart:
             self.cart[variant_key] = {"quantity": 0}
@@ -30,14 +42,13 @@ class Cart:
             self.cart[variant_key]["quantity"] = quantity
         else:
             self.cart[variant_key]["quantity"] += quantity
-
         self.save()
 
-    def remove(self, product, size=None, color=None, remove_all=False):
+    def remove(self, product_id, size_id=None, color_id=None, remove_all=False):
         """
         Remove a product from the cart, either all quantities or just one.
         """
-        variant_key = self._generate_variant_key(product, size, color)
+        variant_key = self._generate_variant_key(product_id, size_id, color_id)
 
         if variant_key in self.cart:
             if remove_all:
@@ -73,7 +84,7 @@ class Cart:
                 if key in self.cart:
                     del self.cart[key]
 
-        for item in cart.values():
+        for item in sorted(cart.values(), key=lambda x: (x["product"].name)):
             item["price"] = Decimal(item["product"].price)
             item["total_price"] = item["price"] * item["quantity"]
             yield item
@@ -93,23 +104,28 @@ class Cart:
         """
         marks the sessions as modified to ake sure it get saved
         """
-        self.session.modified = True
+        if self.request.user.is_authenticated:
+            cart = self.request.user.cart
+            cart.data = self.cart.copy()
+            cart.save()
+        else:
+            self.session[settings.CART_SESSION_ID] = self.cart
+            self.session.modified = True
 
     def clear(self):
         # remove the cart from the session
         self.cart = {}
-        del self.session[settings.CART_SESSION_ID]
         self.save()
 
     @staticmethod
-    def _generate_variant_key(product, size=None, color=None):
+    def _generate_variant_key(product_id, size_id=None, color_id=None):
         """
         generate the variant key for a given product in
         the cart
         """
-        product_id = str(product.id)
-        size_id = str(size.id) if size else ""
-        color_id = str(color.id) if color else ""
+        product_id = str(product_id)
+        size_id = str(size_id) if size_id else ""
+        color_id = str(color_id) if color_id else ""
         return f"{product_id}-{size_id}-{color_id}"
 
     @staticmethod

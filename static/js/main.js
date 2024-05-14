@@ -156,7 +156,9 @@
 
     $('.js-show-search').on('click',function(){
         $(this).toggleClass('show-search');
-        $('.panel-search').slideToggle(400);
+        $('.panel-search').slideToggle(400,function() {
+        // Add focus to the input field after the search panel is toggled
+        $('input[name="search-product"]').focus()});
 
         if($('.js-show-filter').hasClass('show-filter')) {
             $('.js-show-filter').removeClass('show-filter');

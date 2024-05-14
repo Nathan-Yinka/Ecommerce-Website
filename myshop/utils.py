@@ -1,6 +1,7 @@
 from django.forms.utils import ErrorList
 
 
+
 class DivErrorList(ErrorList):
     def __str__(self):
         return self.as_divs()

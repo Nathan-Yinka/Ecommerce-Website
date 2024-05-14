@@ -3,16 +3,17 @@ import math
 
 from django.shortcuts import render
 from django.views.generic import ListView
+from django.views.generic.base import RedirectView
+from django.urls import reverse_lazy
 from django.db.models import Max
 from taggit.models import Tag
 
-
-from .models import Category, Product , ProductColor
+from .models import Category, Product, ProductColor
 
 
 # Create your views here.
 
-class ProductListView(ListView):
+class HomeView(ListView):
     model = Product
     template_name = "shop/product.html"
     context_object_name = "products"
@@ -29,6 +30,7 @@ class ProductListView(ListView):
         context['colors'] = self.get_filter_colour_list()
 
         context['tags'] = self.get_all_tags()
+        context['page'] = "home"
         return context
 
     def get_filter_product_price(self):
@@ -62,5 +64,28 @@ class ProductListView(ListView):
         return tags
 
 
+class ShopView(HomeView):
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['page'] = "shop"
+        context["shop_query"] = self.get_shop_query()
+
+        return context
+
+    def get_shop_query(self):
+        category_slug = self.request.session.pop('category_slug', None)
+        if category_slug:
+            category = Category.objects.filter(slug=category_slug).first()
+            return category
+        return None
 
 
+class CategoryRedirectView(RedirectView):
+    url = reverse_lazy("shop:shop")
+
+    def get_redirect_url(self, *args, **kwargs):
+        category_slug = kwargs.get("category_slug", None)
+        if category_slug:
+            self.request.session['category_slug'] = category_slug
+        return super().get_redirect_url(*args, **kwargs)

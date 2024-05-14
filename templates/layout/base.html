@@ -6,7 +6,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 <!--===============================================================================================-->	
-	<link rel="icon" type="image/png" href="images/icons/favicon.png"/>
+	<link rel="icon" type="image/png" href="{% static 'images/icons/favicon.png' %}"/>
 <!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
 <!--===============================================================================================-->
@@ -58,61 +58,36 @@
 					<i class="zmdi zmdi-close"></i>
 				</div>
 			</div>
-			
+
 			<div class="header-cart-content flex-w js-pscroll">
 				<ul class="header-cart-wrapitem w-full">
-					<li class="header-cart-item flex-w flex-t m-b-12">
-						<div class="header-cart-item-img">
-							<img src="{% static 'images/item-cart-01.jpg' %}" alt="IMG">
+					{% for item in cart %}
+                        {% with product=item.product color=item.color size=item.size %}
+                        <li class="header-cart-item flex-w flex-t m-b-12">
+						<div class="header-cart-item-img" data-product="{{ product.id }}" data-size="{{ size.id }}" data-color="{{ color.id }}">
+							<img src="{{ product.image.url }}" alt="{{ product.name }}">
 						</div>
 
 						<div class="header-cart-item-txt p-t-8">
 							<a href="#" class="header-cart-item-name m-b-18 hov-cl1 trans-04">
-								White Shirt Pleat
+								{{ product.name }}
+								<small class="header-cart-item-info2">{% if size %}(size: {{ size.size }}) {% endif %} {% if color %}(color: {{ color.color }}) {% endif %}</small>
 							</a>
 
 							<span class="header-cart-item-info">
-								1 x $19.00
+								{{ item.quantity }} x ${{ product.price }}
 							</span>
 						</div>
 					</li>
-
-					<li class="header-cart-item flex-w flex-t m-b-12">
-						<div class="header-cart-item-img">
-							<img src="{% static 'images/item-cart-02.jpg' %}" alt="IMG">
-						</div>
-
-						<div class="header-cart-item-txt p-t-8">
-							<a href="#" class="header-cart-item-name m-b-18 hov-cl1 trans-04">
-								Converse All Star
-							</a>
-
-							<span class="header-cart-item-info">
-								1 x $39.00
-							</span>
-						</div>
-					</li>
-
-					<li class="header-cart-item flex-w flex-t m-b-12">
-						<div class="header-cart-item-img">
-							<img src="{% static 'images/item-cart-03.jpg' %}" alt="IMG">
-						</div>
-
-						<div class="header-cart-item-txt p-t-8">
-							<a href="#" class="header-cart-item-name m-b-18 hov-cl1 trans-04">
-								Nixon Porter Leather
-							</a>
-
-							<span class="header-cart-item-info">
-								1 x $17.00
-							</span>
-						</div>
-					</li>
+                        {% endwith %}
+                        {% empty %}
+                        <li class='text-black'>Cart Is Empty.</li>
+                    {% endfor %}
 				</ul>
-				
+
 				<div class="w-full">
 					<div class="header-cart-total w-full p-tb-40">
-						Total: $75.00
+						Total: <span class="header-cart-total-price">${{ cart.get_total_price }}</span>
 					</div>
 
 					<div class="header-cart-buttons flex-w w-full">
@@ -297,13 +272,14 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 		</span>
 	</div>
 
-<script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.js"></script>
+{#<script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.js"></script>#}
     <script
   src="https://code.jquery.com/jquery-3.7.1.js"
   integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
   crossorigin="anonymous"></script>
 
     <script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
 <!--===============================================================================================-->	
 	<script src="{% static 'vendor/jquery/jquery-3.2.1.min.js' %}"></script>
 <!--===============================================================================================-->
@@ -384,7 +360,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 				swal(nameProduct, "is added to cart !", "success");
 			});
 		});
-	
+
 	</script>
 <!--===============================================================================================-->
 	<script src="{% static 'vendor/perfect-scrollbar/perfect-scrollbar.min.js' %}"></script>
@@ -405,6 +381,13 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 	</script>
 <!--===============================================================================================-->
 	<script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static "js/cart.js" %}"></script>
+    <script>
+        $(window).ready(function(){
+            {#fetchCart()#}
+            {#cartProductDelete()#}
+        })
+    </script>
 
 	{% block script %}
 	{% endblock script %}
@@ -433,6 +416,8 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 			dismissButton.addEventListener('click', hideAlert);
 		});
 		</script>
+
+
 
 </body>
 </html>

@@ -36,8 +36,8 @@
 
 {% block content %}
     <!-- Slider -->
-
-    <section class="section-slide">
+    {% if page == "home" %}
+        <section class="section-slide">
         <div class="wrap-slick1">
             <div class="slick1">
                 <div class="item-slick1" style="background-image: url('{% static 'images/slide-01.jpg' %}');">
@@ -56,7 +56,7 @@
                             </div>
 
                             <div class="layer-slick1 animated visible-false" data-appear="zoomIn" data-delay="1600">
-                                <a href="product.html"
+                                <a href="{% url 'shop:shop' %}"
                                    class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
                                     Shop Now
                                 </a>
@@ -82,7 +82,7 @@
                             </div>
 
                             <div class="layer-slick1 animated visible-false" data-appear="slideInUp" data-delay="1600">
-                                <a href="product.html"
+                                <a href="{% url 'shop:shop' %}"
                                    class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
                                     Shop Now
                                 </a>
@@ -110,7 +110,7 @@
                             </div>
 
                             <div class="layer-slick1 animated visible-false" data-appear="rotateIn" data-delay="1600">
-                                <a href="product.html"
+                                <a href="{% url 'shop:shop' %}"
                                    class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
                                     Shop Now
                                 </a>
@@ -123,7 +123,7 @@
     </section>
 
 
-    <!-- Banner -->
+         <!-- Banner -->
     <div class="sec-banner bg0 p-t-80 p-b-50">
         <div class="container">
             <div class="row">
@@ -134,7 +134,7 @@
                             <div class="block1 wrap-pic-w">
                                 <img src="{{ category.image.url }}" alt="{{ category.name }}" class="object-fit-cover">
 
-                                <a href="product.html"
+                                <a href="{% url 'shop:category_redirect' category.slug %}"
                                    class="block1-txt ab-t-l s-full flex-col-l-sb p-lr-38 p-tb-34 trans-03 respon3">
                                     <div class="block1-txt-child1 flex-col-l">
 								<span class="block1-name ltext-102 trans-04 p-b-8">
@@ -156,28 +156,32 @@
         </div>
     </div>
 
+    {% endif %}
+
 
     <!-- Product -->
     <section class="bg0 p-t-23 p-b-140">
         <div class="container">
-            <div class="p-b-10">
+           {% if page == "home" %}
+             <div class="p-b-10">
                 <h3 class="ltext-103 cl5">
                     Product Overview
                 </h3>
 
             </div>
+        {% endif %}
 
             <div class="flex-w flex-sb-m p-b-52">
                 {#     Category filter section      #}
                 <div class="flex-w flex-l-m filter-tope-group m-tb-10">
-                    <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 how-active1" data-filter="*">
+                    <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 how-active1" data-filter="*" id="category-activator-all">
                         All Products
                     </button>
 
                     {% for category in categories %}
-                        <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5"
-                                data-filter=".{{ category.name| lower }}">
-                            {{ category.name }}
+                        <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" {% if shop_query.id == category.id %}id="category-activator"{% endif %}
+                                data-filter=".{{ category.slug| lower }}">
+                            {{ category.name | title }}
                         </button>
                     {% endfor %}
                 </div>
@@ -337,7 +341,7 @@
                             </div>
                         </div>
                         <div class="col-12 filter-btn-con">
-                            <button type="submit" class="filter-btn mb-3 col-1" id="filter-button-submit">filter
+                            <button type="submit" class="filter-btn mb-3 col-3 col-md-2 col-lg-1" id="filter-button-submit">filter
                             </button>
                         </div>
                     </form>
@@ -399,7 +403,7 @@
 
                                     <div class="size-204 respon6-next">
                                         <div class="rs1-select2 bor8 bg0">
-                                            <select class="js-select2" name="size" id="size-select-con">
+                                            <select class="js-select2" name="size_id" id="size-select-con">
                                                 <option>Choose an option</option>
                                                 <option>Size S</option>
                                                 <option>Size M</option>
@@ -418,7 +422,7 @@
 
                                     <div class="size-204 respon6-next">
                                         <div class="rs1-select2 bor8 bg0">
-                                            <select class="js-select2" name="color" id="color-select-con">
+                                            <select class="js-select2" name="color_id" id="color-select-con">
                                                 <option>Choose an option</option>
                                                 <option>Red</option>
                                                 <option>Blue</option>
@@ -429,7 +433,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <input type="hidden" name="product-id" value="" id="product-id-modal">
+                                <input type="hidden" name="product_id" value="" id="product-id-modal">
 
                                 <div class="flex-w flex-r-m p-b-10">
                                     <div class="size-204 flex-w flex-m respon6-next">
@@ -439,16 +443,15 @@
                                             </div>
 
                                             <input class="mtext-104 cl3 txt-center num-product" type="number"
-                                                   name="num-product" value="1">
+                                                   name="quantity" value="1" id="product-quantity">
 
                                             <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
                                                 <i class="fs-16 zmdi zmdi-plus"></i>
                                             </div>
                                         </div>
 
-                                        <button class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail"
-                                                type="submit">
-                                            Add to cart
+                                        <button class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail mt-3"
+                                                type="submit">Add to cart
                                         </button>
                                     </div>
                                 </div>
@@ -460,23 +463,23 @@
                                     <a href="#"
                                        class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 js-addwish-detail tooltip100"
                                        data-tooltip="Add to Wishlist">
-                                        <i class="zmdi zmdi-favorite"></i>
+                                        <i class="zmdi zmdi-favorite zmdi-hc-lg"></i>
                                     </a>
                                 </div>
 
                                 <a href="#" class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100"
                                    data-tooltip="Facebook">
-                                    <i class="fa fa-facebook"></i>
+                                    <i class="fa-brands fa-facebook fa-lg"></i>
                                 </a>
 
                                 <a href="#" class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100"
                                    data-tooltip="Twitter">
-                                    <i class="fa fa-twitter"></i>
+                                    <i class="fa-brands fa-twitter fa-lg"></i>
                                 </a>
 
                                 <a href="#" class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100"
                                    data-tooltip="Google Plus">
-                                    <i class="fa fa-google-plus"></i>
+                                    <i class="fa-brands fa-google-plus fa-lg"></i>
                                 </a>
                             </div>
                         </div>
@@ -647,6 +650,8 @@
                 }
             });
 
+            let nextPageURL;
+
             // Function to fetch products
             async function fetchProducts(event) {
                 event.preventDefault();
@@ -673,6 +678,30 @@
                     url = url.replace(/&$/, '');
                 }
                 // Fetch data
+                fetcher(url)
+
+                return "done";
+            }
+
+            function loadMoreProducts(url){
+
+            }
+
+            function fetcher(url,clear=true){
+                !clear && $("#load-more-btn").html('<i class="fa-solid fa-spinner fa-spin fa-lg" style="color: #ffffff;"></i>')
+                if (clear){
+
+                    $topeContainer.empty()
+                    $topeContainer.html('<div class="loader-svg"><img src="{% static "images/Spinner@1x-1.0s-200px-200px.svg" %}"></img></div>')
+                    $topeContainer.isotope({})
+                    $topeContainer.isotope('layout');
+                }
+                const query = $('input[name="search-product"]').val()
+                const minPrice = document.getElementById('selectedPriceMinInput').value;
+                const maxPrice = document.getElementById('selectedPriceMaxInput').value;
+                const tags = document.getElementById("selectedTagInput").value
+                const colors = document.getElementById("selectedColorInput").value
+
                 fetch(url)
                     .then(response => {
                         if (!response.ok) {
@@ -682,21 +711,31 @@
                     })
                     .then(data => {
                         // Append products to DOM
-                        productIntoDom(data);
+                        const {next, results} = data
+                        nextPageURL = next
+                        clear && $topeContainer.empty()
+                        !nextPageURL && $("#load-more-btn").css('display', 'none')
+                        productIntoDom(results);
                         // Update Isotope layout
+                        $topeContainer.isotope({})
+
                         $topeContainer.isotope('layout');
+                        $topeContainer.isotope('reload');
+                        const $formBtnSubmit = $("#filter-button-submit")
                         $formBtnSubmit.html("filter");
                         if ($('.js-show-filter').hasClass('show-filter')) {
                             $('.js-show-filter').removeClass('show-filter');
                             $('.panel-filter').slideUp(1000);
                         }
-
+                        if ((query || tags.length > 0 || colors.length) && clear) {
+                            $("#category-activator-all").trigger("click")
+                        }
+                        !clear && $("#load-more-btn").text("LOAD MORE")
                     })
                     .catch(error => {
                         console.error('There was a problem with the fetch operation:', error);
+                        $topeContainer.html('<div class="loader-svg fs-24">An Error Occurred</div>')
                     });
-
-                return "done";
             }
 
             function showModalAndFilter(data) {
@@ -717,12 +756,12 @@
                         $("#modal-product-name").text(filterData.name)
                         $("#modal-product-price").text(`$${filterData.price}`)
                         $("#product-id-modal").val(`${filterData.id}`)
-                        const description = filterData.description;
+                        const description = filterData.short_description;
                         const capitalizedDescription = description.charAt(0).toUpperCase() + description.slice(1);
                         $("#modal-product-desc").text(`${capitalizedDescription}`)
                         populateElement(filterData.sizes, "#modal-size-con", "#size-select-con", 'size', "SIZE")
                         populateElement(filterData.colors, "#modal-color-con", "#color-select-con", 'color')
-
+                        $("#product-quantity").val(1)
                         $('.wrap-slick3').each(function () {
                             $(this).find('.slick3').slick({
                                 slidesToShow: 1,
@@ -796,15 +835,28 @@
                 });
             }
 
+            {#load  more #}
+            const $loadMoreBtn = $("#load-more-btn")
+            $loadMoreBtn.on('click',function (event) {
+                event.preventDefault();
+                if (nextPageURL){
+                    fetcher(nextPageURL,false)
+                }
+            })
+
             // Function to append products to DOM
             function productIntoDom(data) {
                 const $loadMoreBtn = $("#load-more-btn")
-                $topeContainer.empty()
+
                 if (data.length === 0) {
-                    $loadMoreBtn.html('<span class="text-black">no product available</span>')
+                    $topeContainer.html('<div class="loader-svg fs-24">No Product</div>')
                     return
                 }
                 data.forEach(product => {
+
+                    $topeContainer.isotope()
+
+                    $topeContainer.isotope('reloadItems')
                     $topeContainer.append(card(product));
                     $topeContainer.isotope('appended', $topeContainer.find('.isotope-item').last());
                     $topeContainer.isotope('layout');
@@ -819,7 +871,7 @@
             // Function to generate HTML for product card
             function card(product) {
                 return (`
-            <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item ${product.category.name.toLowerCase()}" >
+            <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item ${product.category.slug.toLowerCase()}" >
                 <!-- Block2 -->
                 <div class="block2">
                     <div class="block2-pic hov-img0">
@@ -849,6 +901,13 @@
 
             fetchProducts(new Event("submit"));
 
+             if ($('#category-activator').length) {
+                // Trigger the click event on the button with id="category-activator"
+                $('#category-activator').trigger('click');
+            }
+
+            {#   add to cart event    #}
+
             $("#product-order-form").submit(function (event) {
                 const jsonData = {};
                 event.preventDefault();
@@ -858,7 +917,39 @@
                     jsonData[key] = value;
                 });
 
-                console.log(jsonData);
+                $.ajax({
+                    url:"/api/cart/",
+                    type:"POST",
+                    headers: {
+                        "X-CSRFToken": Cookies.get('csrftoken')
+                    },
+                    data:jsonData,
+                    beforeSend:function (){
+                        // Code to execute before sending the AJAX request
+                        $(".js-addcart-detail:submit").html('<i class="fa-solid fa-spinner fa-spin fa-lg" style="color: #ffffff;"></i>')
+                        $(".js-addcart-detail:submit").prop("disabled", true);
+                    },
+                    success: function (response) {
+                        // Handle successful response
+                        console.log('Success:', response);
+                        {#sweet alert success#}
+                        fetchCart()
+                        swal($("#modal-product-name").text(), "is added to cart !", "success");
+
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle error response
+                        console.error('Error:', error);
+                        swal("Error", "an error occurred !", "error");
+                    },
+                    complete: function () {
+                    // Code to execute after sending the AJAX request, regardless of success or failure
+                        $(".js-addcart-detail:submit").text("Add TO CART")
+                        $(".js-addcart-detail:submit").prop("disabled", false);
+
+                    }
+
+                })
             });
 
         });
