@@ -178,6 +178,15 @@
     $('.js-hide-cart').on('click',function(){
         $('.js-panel-cart').removeClass('show-header-cart');
     });
+    /*==================================================================
+    [ Wishlist ]*/
+    $('.js-show-wishlist').on('click',function(){
+        $('.js-panel-wishlist').addClass('show-header-cart');
+    });
+
+    $('.js-hide-wishlist').on('click',function(){
+        $('.js-panel-wishlist').removeClass('show-header-cart');
+    });
 
     /*==================================================================
     [ Cart ]*/
@@ -247,7 +256,7 @@
     [ Show modal1 ]*/
     $('.js-show-modal1').on('click',function(e){
         e.preventDefault();
-        console.log("btn pressed")
+        // console.log("btn pressed")
         $('.js-modal1').addClass('show-modal1');
     });
 

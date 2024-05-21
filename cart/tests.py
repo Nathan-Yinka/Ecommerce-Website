@@ -241,28 +241,15 @@ class WishlistTestCase(TestCase):
         wishlist = Wishlist(request)
 
         # Add a product to the wishlist
-        wishlist.add(self.product1.id)
+        wishlist.add_or_remove(self.product1.id)
         # adding the same product to the wishlist
-        wishlist.add(self.product1.id)
-        wishlist.add(self.product1.id)
+        wishlist.add_or_remove(self.product1.id)
+        wishlist.add_or_remove(self.product1.id)
 
         # Check if the product is added to the wishlist
         self.assertIn(str(self.product1.id), wishlist.wishlist)
         self.assertEqual(len(wishlist),1)
 
-    def test_remove_from_wishlist(self):
-        # Initialize wishlist for the user
-        request = self.request
-        wishlist = Wishlist(request)
-
-        # Add a product to the wishlist
-        wishlist.add(self.product1.id)
-
-        # Remove the product from the wishlist
-        wishlist.remove(self.product1.id)
-
-        # Check if the product is removed from the wishlist
-        self.assertNotIn(str(self.product1.id), wishlist.wishlist)
 
     def test_wishlist_iteration_and_length(self):
         # Iterate over the wishlist
@@ -270,8 +257,8 @@ class WishlistTestCase(TestCase):
         wishlist = Wishlist(request)
 
         # Add a product to the wishlist
-        wishlist.add(self.product1.id)
-        wishlist.add(self.product2.id)
+        wishlist.add_or_remove(self.product1.id)
+        wishlist.add_or_remove(self.product2.id)
 
         products_in_wishlist = list(wishlist)
 

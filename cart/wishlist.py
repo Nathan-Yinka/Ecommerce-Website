@@ -28,23 +28,21 @@ class Wishlist:
         else:
             return wishlist_data
 
-    def add(self, product_id):
+    def add_or_remove(self, product_id):
         """
             Add a product to the wishlist
         """
         product_id = str(product_id)
+        action = None
         if product_id not in self.wishlist:
             self.wishlist.append(product_id)
-            self.save()
-
-    def remove(self, product_id):
-        """
-        Remove a product from the wishlist
-        """
-        product_id = str(product_id)
-        if product_id in self.wishlist:
+            action = "added"
+        else:
             self.wishlist.remove(product_id)
-            self.save()
+            action = "removed"
+        self.save()
+        return action
+
 
     def clear(self):
         # remove the cart from the session
@@ -60,6 +58,12 @@ class Wishlist:
 
         for product in products:
             yield product
+
+    def get_total_price(self):
+        """
+        get the total price for the Wishlist
+        """
+        return sum(item.price for item in self)
 
     def __len__(self):
         """Count the length of all the items in the cart

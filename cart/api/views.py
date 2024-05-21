@@ -3,8 +3,9 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from cart.cart import Cart
+from cart.wishlist import Wishlist
 
-from .serializers import CartAddProductSerializer,CartItemSerializer,CartDeleteSerializer
+from .serializers import CartAddProductSerializer,CartItemSerializer,CartDeleteSerializer,WishlistSerializer,ProductSerializer
 
 
 class CartGetAddApiView(APIView):
@@ -51,5 +52,35 @@ class CartProductDeleteApiView(APIView):
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
 
+class WishlistAddRemoveGetApiView(APIView):
+    serializer_class = WishlistSerializer
 
+    def post(self, request, *args, **kwargs):
+        wishlist = Wishlist(request)
+        serializer = WishlistSerializer(data=request.data)
+
+        if serializer.is_valid():
+            product_id = serializer.validated_data.get('product_id')
+            action = wishlist.add_or_remove(product_id)
+            serializer_data = serializer.data
+            serializer_data.update({"action":action})
+
+            return Response(serializer_data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self,request,*args,**kwargs):
+        wishlist = Wishlist(request)
+        items = [item for item in wishlist]
+        length = len(wishlist)
+        wishlist = wishlist.get_total_price()
+
+        serializer = ProductSerializer(items, many=True)
+
+        response_data ={
+            "items":serializer.data,
+            "length": length,
+            "cart_total_price": wishlist
+        }
+        return Response(response_data)
 

@@ -13,6 +13,11 @@ class ProductListView(generics.ListAPIView):
     queryset = Product.objects.all()
     pagination_class = ProductPageNumberPagination
 
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
+
     def get_queryset(self):
         query = self.request.GET.get('q', "")
         min_price = self.request.GET.get('min', None)

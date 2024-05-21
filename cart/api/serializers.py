@@ -73,4 +73,15 @@ class CartDeleteSerializer(CartAddProductSerializer):
         self.fields.pop('quantity', None)
 
 
+class WishlistSerializer(serializers.Serializer):
+    product_id = serializers.IntegerField()
+
+    def validate(self, data):
+        validated_data = super().validate(data)
+        product_id = validated_data.get('product_id')
+
+        if product_id is not None and Product.objects.filter(id=product_id).exists():
+            return validated_data
+        raise serializers.ValidationError("Invalid product.")
+
 

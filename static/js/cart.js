@@ -3,7 +3,7 @@ function fetchCart() {
         url: '/api/cart/',
         type: 'GET',
         success: function (response) {
-            console.log('Success:', response);
+            // console.log('Success:', response);
             // Do something with the response data
             $('.js-show-cart').each(function () {
                 $(this).attr('data-notify', response.length);
@@ -73,7 +73,7 @@ function cartDeleteRequest(product_id,size_id,color_id) {
                     },
                     success: function (response) {
                         // Handle successful response
-                        console.log('Success:', response);
+                        // console.log('Success:', response);
                         fetchCart()
                     },
                     error: function (xhr, status, error) {

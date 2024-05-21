@@ -99,6 +99,7 @@ class Product(models.Model):
 
         return images_url
 
+
     class Meta:
         indexes = [
             models.Index(fields=["-created"]),
